@@ -3,87 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌫️ 擦亮窗戶</title>
+    <title>🏮 專屬天燈</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Noto Serif TC', serif;
-            background-color: #f4eade; /* 溫暖的底色 */
-            overflow: hidden;
-            display: flex; justify-content: center; align-items: center; text-align: center;
+        body {
+            margin: 0; height: 100vh; overflow: hidden; font-family: 'Noto Serif TC', serif;
+            background: linear-gradient(to bottom, #0f172a, #1e293b); /* 星空背景 */
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
         }
-        /* 底下的驚喜文字 */
-        .secret-content {
-            padding: 30px; color: #5c4a43; font-size: 20px; line-height: 1.8;
-            z-index: 1; position: absolute;
+        .lantern {
+            font-size: 120px; transition: all 5s ease-in; cursor: pointer; filter: drop-shadow(0 0 20px rgba(255,165,0,0.8));
         }
-        .secret-content h1 { color: #d18b70; font-size: 28px; margin-bottom: 20px; }
-        
-        /* 覆蓋在上面的霧氣畫布 */
-        canvas {
-            position: absolute; top: 0; left: 0; z-index: 2; width: 100%; height: 100%; touch-action: none;
+        .fly {
+            transform: translateY(-80vh) scale(0.2); opacity: 0;
         }
-        .hint {
-            position: absolute; bottom: 10%; z-index: 3; color: rgba(255,255,255,0.8);
-            font-size: 16px; pointer-events: none; animation: pulse 2s infinite;
+        .btn {
+            margin-top: 40px; padding: 12px 30px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white; border-radius: 30px; font-size: 16px; cursor: pointer; transition: 0.3s;
         }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .btn:hover { background: rgba(255, 255, 255, 0.3); }
+        .message {
+            position: absolute; text-align: center; font-size: 20px; line-height: 2; letter-spacing: 2px;
+            opacity: 0; transition: opacity 3s ease 2s; /* 延遲出現 */
+        }
+        .show-message { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="secret-content">
-        <h1>母親節快樂 🌸</h1>
-        即使距離很遠，<br>
-        也想把最清晰的愛留給妳。<br>
-        謝謝妳總是不求回報地照顧我，<br>
-        等我回家陪妳吃飯！
+    <div class="lantern" id="lantern">🏮</div>
+    <button class="btn" id="fly-btn">✨ 點火升空</button>
+
+    <div class="message" id="message">
+        願媽媽天天開心、身體健康。<br>
+        把最大的願望交給天空，<br>
+        把最真實的愛留給妳 ❤️<br>
+        母親節快樂！
     </div>
 
-    <canvas id="fog-canvas"></canvas>
-    <div class="hint" id="hint">👆 用手指擦去玻璃上的霧氣</div>
-
     <script>
-        const canvas = document.getElementById('fog-canvas');
-        const ctx = canvas.getContext('2d');
-        const hint = document.getElementById('hint');
+        const lantern = document.getElementById('lantern');
+        const btn = document.getElementById('fly-btn');
+        const message = document.getElementById('message');
 
-        function resize() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            // 填滿半透明的白色霧氣
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.lineWidth = 60; // 抹開的粗細
-        }
-        window.addEventListener('resize', resize); resize();
-
-        let isDrawing = false;
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        }
-        function scratch(e) {
-            if (!isDrawing) return;
-            hint.style.display = 'none'; // 開始擦就隱藏提示
-            const { x, y } = getPos(e);
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.lineTo(x, y); ctx.stroke();
-        }
-        function startScratch(e) {
-            isDrawing = true;
-            const { x, y } = getPos(e);
-            ctx.beginPath(); ctx.moveTo(x, y); scratch(e);
-        }
-
-        canvas.addEventListener('mousedown', startScratch);
-        canvas.addEventListener('mousemove', scratch);
-        window.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('touchstart', startScratch);
-        canvas.addEventListener('touchmove', scratch);
-        window.addEventListener('touchend', () => isDrawing = false);
+        btn.addEventListener('click', () => {
+            lantern.classList.add('fly');
+            btn.style.opacity = '0';
+            message.classList.add('show-message');
+        });
     </script>
 </body>
 </html>
