@@ -3,77 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍵 喝杯熱茶吧</title>
+    <title>🌫️ 擦亮窗戶</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Noto Serif TC', serif; /* 使用溫雅的明體 */
-            background-color: #f7f4ef; /* 溫暖的米灰色 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #5c4a43;
-            text-align: center;
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Noto Serif TC', serif;
+            background-color: #f4eade; /* 溫暖的底色 */
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center; text-align: center;
         }
-        .cup-container {
-            position: relative;
-            margin-bottom: 40px;
+        /* 底下的驚喜文字 */
+        .secret-content {
+            padding: 30px; color: #5c4a43; font-size: 20px; line-height: 1.8;
+            z-index: 1; position: absolute;
         }
-        .cup {
-            font-size: 80px;
-            position: relative;
-            z-index: 2;
-        }
-        /* 製作熱氣裊裊上升的動畫 */
-        .steam {
-            position: absolute;
-            top: -30px;
-            font-size: 30px;
-            color: #dcd0c5;
-            opacity: 0;
-            z-index: 1;
-        }
-        .steam-1 { left: 15px; animation: rise 3s infinite ease-in; }
-        .steam-2 { left: 45px; animation: rise 3s infinite 1s ease-in; }
+        .secret-content h1 { color: #d18b70; font-size: 28px; margin-bottom: 20px; }
         
-        @keyframes rise {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
-            50% { opacity: 0.7; }
-            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        /* 覆蓋在上面的霧氣畫布 */
+        canvas {
+            position: absolute; top: 0; left: 0; z-index: 2; width: 100%; height: 100%; touch-action: none;
         }
-
-        .text-container {
-            font-size: 18px;
-            line-height: 2;
-            letter-spacing: 1px;
-            opacity: 0;
-            animation: fadeIn 2s forwards 1.5s; /* 延遲 1.5 秒後淡入 */
+        .hint {
+            position: absolute; bottom: 10%; z-index: 3; color: rgba(255,255,255,0.8);
+            font-size: 16px; pointer-events: none; animation: pulse 2s infinite;
         }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="cup-container">
-        <!-- 裊裊熱氣 -->
-        <div class="steam steam-1">〰</div>
-        <div class="steam steam-2">〰</div>
-        <!-- 茶杯本體 -->
-        <div class="cup">🍵</div>
+    <div class="secret-content">
+        <h1>母親節快樂 🌸</h1>
+        即使距離很遠，<br>
+        也想把最清晰的愛留給妳。<br>
+        謝謝妳總是不求回報地照顧我，<br>
+        等我回家陪妳吃飯！
     </div>
 
-    <div class="text-container">
-        媽，平常辛苦了。<br>
-        今天什麼都別操心，<br>
-        先坐下來好好休息，喝杯茶吧！<br><br>
-        母親節快樂 🌸
-    </div>
+    <canvas id="fog-canvas"></canvas>
+    <div class="hint" id="hint">👆 用手指擦去玻璃上的霧氣</div>
 
+    <script>
+        const canvas = document.getElementById('fog-canvas');
+        const ctx = canvas.getContext('2d');
+        const hint = document.getElementById('hint');
+
+        function resize() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            // 填滿半透明的白色霧氣
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.lineJoin = "round"; ctx.lineCap = "round"; ctx.lineWidth = 60; // 抹開的粗細
+        }
+        window.addEventListener('resize', resize); resize();
+
+        let isDrawing = false;
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+        function scratch(e) {
+            if (!isDrawing) return;
+            hint.style.display = 'none'; // 開始擦就隱藏提示
+            const { x, y } = getPos(e);
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.lineTo(x, y); ctx.stroke();
+        }
+        function startScratch(e) {
+            isDrawing = true;
+            const { x, y } = getPos(e);
+            ctx.beginPath(); ctx.moveTo(x, y); scratch(e);
+        }
+
+        canvas.addEventListener('mousedown', startScratch);
+        canvas.addEventListener('mousemove', scratch);
+        window.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('touchstart', startScratch);
+        canvas.addEventListener('touchmove', scratch);
+        window.addEventListener('touchend', () => isDrawing = false);
+    </script>
 </body>
 </html>
