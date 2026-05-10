@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📻 我們的錄音帶</title>
+    <title>📻 給媽媽的悄悄話</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -56,9 +56,8 @@
     <button class="play-btn" id="play-btn">▶ 播放</button>
     <div class="lyrics" id="lyrics"></div>
 
-    <!-- 隱藏的 YouTube 播放器 -->
-    <!-- 👇👇👇 請把下面的 YOUTUBE_ID 換成你的影片代碼 👇👇👇 -->
-    <iframe id="yt-player" width="0" height="0" src="https://www.youtube.com/watch?v=a53LYWWuAWU" frameborder="0" allow="autoplay"></iframe>
+    <!-- 隱藏的 YouTube 播放器 (已經幫你換好你的歌了！) -->
+    <iframe id="yt-player" width="0" height="0" src="https://www.youtube.com/embed/a53LYWWuAWU?enablejsapi=1&autoplay=0" frameborder="0" allow="autoplay"></iframe>
 
     <script>
         const playBtn = document.getElementById('play-btn');
@@ -79,7 +78,7 @@
             playBtn.style.opacity = '0.5';
             playBtn.innerText = '播放中...';
             
-            // 觸發 YouTube 播放
+            // 觸發 YouTube 播放音樂
             ytPlayer.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
             
             // 啟動齒輪旋轉
@@ -95,7 +94,7 @@
                         lyricsDiv.innerHTML += message.charAt(index);
                     }
                     index++;
-                    setTimeout(type, 150); // 調整這裡的數字可以改變打字速度
+                    setTimeout(type, 150);
                 } else {
                     // 打字結束 (影片繼續播)
                     reel1.classList.remove('spin');
