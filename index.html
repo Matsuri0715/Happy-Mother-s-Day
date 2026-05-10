@@ -3,88 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌱 為妳種一朵花</title>
+    <title>🥠 媽媽的專屬好運籤</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f0f7f4; /* 清新的淡綠色背景 */
+            background-color: #fff4e6; /* 溫暖的奶油橘色 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            color: #5c6b65;
             text-align: center;
         }
-        #plant-container {
+        .title { color: #d97757; font-size: 22px; margin-bottom: 30px; font-weight: bold; }
+        #cookie {
             font-size: 100px;
-            margin-bottom: 20px;
-            transition: transform 0.3s;
-        }
-        .bounce { animation: bounceUp 0.5s; }
-        @keyframes bounceUp {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px) scale(1.1); }
-        }
-        #water-btn {
-            background-color: #88b7b5;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 25px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(136, 183, 181, 0.3);
-            transition: 0.2s;
+            transition: 0.1s;
+            user-select: none;
         }
-        #water-btn:active { transform: scale(0.95); }
-        #message {
+        #cookie:active { transform: scale(0.9) rotate(10deg); }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-10deg); }
+            75% { transform: translateX(10px) rotate(10deg); }
+        }
+        #fortune-slip {
             margin-top: 30px;
-            font-size: 18px;
-            line-height: 1.6;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(217, 119, 87, 0.15);
+            width: 80%;
+            max-width: 300px;
+            color: #5c4a43;
+            font-size: 16px;
+            line-height: 1.5;
             opacity: 0;
-            transition: opacity 1.5s ease;
-            padding: 0 20px;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            border-left: 5px solid #d97757;
         }
-        .show { opacity: 1 !important; }
+        .show-slip { opacity: 1 !important; transform: translateY(0) !important; }
+        .hint { margin-top: 15px; color: #b89286; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div id="plant-container">🌱</div>
-    <button id="water-btn">💧 點擊澆水</button>
-    
-    <div id="message">
-        養大一朵花需要很多耐心，<br>
-        就像妳花了很多心力把我養大。<br>
-        媽，謝謝妳，母親節快樂！❤️
-    </div>
+    <div class="title">母親節限定 幸運餅乾 🥠</div>
+    <div id="cookie">🥠</div>
+    <div class="hint">點擊餅乾抽出今日好運</div>
+
+    <div id="fortune-slip"></div>
 
     <script>
-        const plant = document.getElementById('plant-container');
-        const btn = document.getElementById('water-btn');
-        const msg = document.getElementById('message');
+        const cookie = document.getElementById('cookie');
+        const slip = document.getElementById('fortune-slip');
         
-        let growthStage = 0;
-        const stages = ['🌱', '🌿', '🌷']; // 種子 -> 葉子 -> 花
+        const fortunes = [
+            "【大吉】今日宜：放下家事，躺平休息！<br><br>幸運物：寶貝打來的一通電話 📞",
+            "【特大吉】獲得「煩惱全消」魔法！<br><br>請放心，今年小孩絕對會把自己照顧得好好的 💪",
+            "【超級吉】今日宜：當個女王 👑<br><br>想吃什麼、想買什麼通通去，帳單...等我以後賺錢幫妳付！",
+            "【無敵大吉】刮中隱藏大獎！<br><br>獲得「無限期愛妳」憑證一張，母親節快樂 ❤️"
+        ];
 
-        btn.addEventListener('click', () => {
-            if (growthStage < 2) {
-                growthStage++;
-                // 替換植物圖案並加入跳動特效
-                plant.textContent = stages[growthStage];
-                plant.classList.remove('bounce');
-                void plant.offsetWidth; // 觸發重繪
-                plant.classList.add('bounce');
+        cookie.addEventListener('click', () => {
+            // 餅乾震動動畫
+            cookie.classList.remove('shake');
+            void cookie.offsetWidth;
+            cookie.classList.add('shake');
 
-                // 如果開花了，隱藏按鈕並顯示文字
-                if (growthStage === 2) {
-                    btn.style.display = 'none';
-                    msg.classList.add('show');
-                }
-            }
+            // 隱藏舊的籤詩，稍微延遲後顯示新的籤詩
+            slip.classList.remove('show-slip');
+            
+            setTimeout(() => {
+                const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+                slip.innerHTML = randomFortune;
+                slip.classList.add('show-slip');
+            }, 300); // 配合震動時間的延遲
         });
     </script>
 </body>
