@@ -56,16 +56,18 @@
     <button class="play-btn" id="play-btn">▶ 播放</button>
     <div class="lyrics" id="lyrics"></div>
 
-    <!-- 音樂播放器 (隱藏在背景) -->
-    <!-- 把 src 後面的 song.mp3 換成你的音樂檔名 -->
-    <audio id="bg-music" src="song.mp3" preload="auto"></audio>
+    <!-- 隱藏的 YouTube 播放器 -->
+    <!-- 👇👇👇 請把下面的 YOUTUBE_ID 換成你的影片代碼 👇👇👇 -->
+    <iframe id="yt-player" width="0" height="0" src="https://www.youtube.com/embed/YOUTUBE_ID?enablejsapi=1&autoplay=0" frameborder="0" allow="autoplay"></iframe>
 
     <script>
         const playBtn = document.getElementById('play-btn');
         const reel1 = document.getElementById('reel1');
         const reel2 = document.getElementById('reel2');
         const lyricsDiv = document.getElementById('lyrics');
-        const bgMusic = document.getElementById('bg-music');
+        
+        // 抓取 YouTube 播放器
+        const ytPlayer = document.getElementById('yt-player').contentWindow;
 
         const message = "媽，辛苦了！\n雖然現在沒辦法陪在妳身邊，\n但我一直都很掛念妳喔。\n謝謝妳所有的包容，\n母親節快樂 ❤️";
         let index = 0;
@@ -77,10 +79,8 @@
             playBtn.style.opacity = '0.5';
             playBtn.innerText = '播放中...';
             
-            // 播放音樂
-            bgMusic.play().catch(error => {
-                console.log("瀏覽器阻擋自動播放或找不到音樂檔", error);
-            });
+            // 觸發 YouTube 播放
+            ytPlayer.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
             
             // 啟動齒輪旋轉
             reel1.classList.add('spin');
@@ -95,9 +95,9 @@
                         lyricsDiv.innerHTML += message.charAt(index);
                     }
                     index++;
-                    setTimeout(type, 150); // 可以調整打字速度
+                    setTimeout(type, 150); // 調整這裡的數字可以改變打字速度
                 } else {
-                    // 打字結束 (不停止音樂，讓音樂繼續播)
+                    // 打字結束 (影片繼續播)
                     reel1.classList.remove('spin');
                     reel2.classList.remove('spin');
                     playBtn.innerText = '播放完畢';
