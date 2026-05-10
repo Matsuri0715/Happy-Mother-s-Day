@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 您的溫馨包裹已抵達</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-pink: #ffafcc;
+            --dark-pink: #ff8fab;
+            --light-pink: #ffe5ec;
+            --bg-pink: #fff0f3;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-pink);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 85%;
+            max-width: 380px;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(255, 175, 204, 0.3);
+            text-align: center;
+            border: 3px solid var(--light-pink);
+            position: relative;
+            z-index: 10;
+        }
+
+        h2 {
+            color: var(--dark-pink);
+            font-size: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* 進度條外框 */
+        .progress-bg {
+            background-color: var(--light-pink);
+            height: 14px;
+            border-radius: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 進度條本體 */
+        .progress-bar {
+            background: linear-gradient(90deg, var(--main-pink), var(--dark-pink));
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* 狀態文字列表 */
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            min-height: 130px;
+        }
+
+        .status-list li {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #777;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: slideIn 0.5s forwards;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-list li::before {
+            content: '🌸';
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        /* 禮物盒 */
+        #gift-box {
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .box-emoji {
+            font-size: 90px;
+            filter: drop-shadow(0 5px 10px rgba(255, 143, 171, 0.4));
+            animation: heartBeat 1.5s infinite;
+        }
+
+        .click-hint {
+            color: var(--dark-pink);
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 14px;
+            background: var(--light-pink);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* 最終畫面 */
+        #final-message img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 5px solid var(--light-pink);
+        }
+
+        #final-message h1 {
+            color: var(--dark-pink);
+            font-size: 26px;
+            margin: 10px 0;
+        }
+
+        #final-message p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .hidden { display: none !important; }
+
+        /* 動畫區 */
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pop-in { animation: pop 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.27); }
+
+        /* 愛心噴發特效 */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: var(--dark-pink);
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: fly 2s linear forwards;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-card">
+        <div id="tracking-ui">
+            <h2>🌸 溫馨包裹物流查詢 🌸</h2>
+            <div class="progress-bg">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <ul class="status-list" id="status-list"></ul>
+        </div>
+
+        <div id="gift-box" class="hidden">
+            <div class="box-emoji">🎁</div>
+            <div class="click-hint">點擊拆開驚喜</div>
+        </div>
+
+        <div id="final-message" class="hidden">
+            <img id="moms-photo" src="https://images.unsplash.com/photo-1525268771113-32d9e9021a97?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="母親節快樂">
+            <h1>母親節快樂 💖</h1>
+            <p>親愛的媽媽：<br>
+               雖然這陣子不住在家裡，<br>
+               但我的心一直都在妳身邊喔！<br>
+               謝謝妳總是這麼愛我，<br>
+               祝最漂亮的媽媽天天開心、身體健康！</p>
+        </div>
+    </div>
+
+    <script>
+        const statuses = [
+            { text: "[理貨中] 滿滿的感謝已裝箱", width: "35%" },
+            { text: "[運送中] 跨越距離直達媽媽心裡", width: "70%" },
+            { text: "[已送達] 您的寶貝愛意已簽收", width: "100%" }
+        ];
+
+        let currentStatus = 0;
+        const progressBar = document.getElementById('progress-bar');
+        const statusList = document.getElementById('status-list');
+        const trackingUi = document.getElementById('tracking-ui');
+        const giftBox = document.getElementById('gift-box');
+        const finalMessage = document.getElementById('final-message');
+
+        function runTracking() {
+            if (currentStatus < statuses.length) {
+                const li = document.createElement('li');
+                li.textContent = statuses[currentStatus].text;
+                statusList.appendChild(li);
+                progressBar.style.width = statuses[currentStatus].width;
+                
+                currentStatus++;
+                setTimeout(runTracking, 2000);
+            } else {
+                setTimeout(() => {
+                    trackingUi.style.display = 'none';
+                    giftBox.classList.remove('hidden');
+                    giftBox.classList.add('pop-in');
+                }, 1500);
+            }
+        }
+
+        // 建立愛心動畫
+        function createHeart() {
+            for(let i=0; i<30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = '50%';
+                heart.style.top = '50%';
+                // 隨機噴發方向
+                heart.style.setProperty('--tx', `${(Math.random() - 0.5) * 400}px`);
+                heart.style.setProperty('--ty', `${(Math.random() - 0.5) * 400}px`);
+                heart.style.setProperty('--tr', `${Math.random() * 360}deg`);
+                
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 2000);
+            }
+        }
+
+        giftBox.addEventListener('click', () => {
+            createHeart(); // 噴發愛心
+            giftBox.style.display = 'none';
+            finalMessage.classList.remove('hidden');
+            finalMessage.classList.add('pop-in');
+            
+            // 輕微震動 (手機支援的話)
+            if (window.navigator.vibrate) window.navigator.vibrate(200);
+        });
+
+        // 啟動
+        window.onload = () => setTimeout(runTracking, 1000);
+    </script>
+</body>
+</html>
