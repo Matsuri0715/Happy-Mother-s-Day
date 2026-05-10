@@ -3,97 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📻 復古錄音帶</title>
+    <title>📻 我們的錄音帶</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0; height: 100vh; background-color: #e0d5c1; font-family: 'Noto Sans TC', sans-serif;
             display: flex; flex-direction: column; justify-content: center; align-items: center; color: #4a3b32;
         }
-        /* 錄音帶本體 */
-        .cassette {
-            width: 300px; height: 190px; background-color: #333; border-radius: 15px; position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); border: 2px solid #555; display: flex; flex-direction: column; align-items: center;
+        
+        /* 3D 翻轉容器 */
+        .cassette-container {
+            perspective: 1000px;
+            width: 300px; height: 190px;
         }
+        
+        .cassette-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .is-flipped { transform: rotateY(180deg); }
+
+        /* 錄音帶正反面共用設定 */
+        .cassette-front, .cassette-back {
+            width: 100%; height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            background-color: #333; border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            border: 2px solid #555; 
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* 背面初始狀態是反的 */
+        .cassette-back { transform: rotateY(180deg); }
+
         /* 錄音帶貼紙 */
         .label {
             width: 260px; height: 110px; background-color: #f4eade; margin-top: 15px; border-radius: 8px;
             display: flex; flex-direction: column; justify-content: space-between; padding: 10px; box-sizing: border-box;
-            border-top: 15px solid #d18b70;
         }
+        .label-a { border-top: 15px solid #d18b70; } /* A面暖橘色 */
+        .label-b { border-top: 15px solid #88b7b5; } /* B面湖水綠 */
+
         .label-title { text-align: center; font-weight: bold; font-size: 18px; color: #4a3b32; }
+        
         /* 齒輪區塊 */
         .reels { display: flex; justify-content: space-between; padding: 0 20px; }
         .reel { font-size: 40px; line-height: 1; }
-        /* 旋轉動畫 */
         .spin { animation: spin 3s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         
+        /* 按鈕與文字區 */
+        .controls { height: 60px; margin-top: 30px; display: flex; align-items: center; }
         .play-btn {
-            margin-top: 30px; padding: 10px 40px; background-color: #d18b70; color: white; border: none;
+            padding: 10px 40px; background-color: #d18b70; color: white; border: none;
             border-radius: 25px; font-size: 18px; cursor: pointer; box-shadow: 0 4px 10px rgba(209, 139, 112, 0.4);
+            transition: 0.3s;
         }
         .play-btn:active { transform: scale(0.95); }
+        .flip-btn { background-color: #88b7b5; box-shadow: 0 4px 10px rgba(136, 183, 181, 0.4); display: none; }
         
-        /* 歌詞文字區 */
         .lyrics {
-            margin-top: 30px; height: 100px; font-size: 16px; line-height: 1.8; text-align: center; padding: 0 20px;
+            margin-top: 20px; height: 100px; font-size: 16px; line-height: 1.8; text-align: center; padding: 0 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="cassette">
-        <div class="label">
-            <div class="label-title">給媽媽的悄悄話</div>
-            <div class="reels">
-                <div class="reel" id="reel1">⚙️</div>
-                <div class="reel" id="reel2">⚙️</div>
+    <div class="cassette-container">
+        <div class="cassette-inner" id="cassette">
+            <!-- A 面 -->
+            <div class="cassette-front">
+                <div class="label label-a">
+                    <div class="label-title">Side A: 給媽媽的悄悄話</div>
+                    <div class="reels">
+                        <div class="reel reel-a">⚙️</div>
+                        <div class="reel reel-a">⚙️</div>
+                    </div>
+                </div>
+            </div>
+            <!-- B 面 -->
+            <div class="cassette-back">
+                <div class="label label-b">
+                    <div class="label-title">Side B: 隱藏兌換券</div>
+                    <div class="reels">
+                        <div class="reel reel-b">⚙️</div>
+                        <div class="reel reel-b">⚙️</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <button class="play-btn" id="play-btn">▶ 播放</button>
+    <div class="controls">
+        <button class="play-btn" id="play-btn">▶ 播放 A 面</button>
+        <button class="play-btn flip-btn" id="flip-btn">↺ 翻轉到 B 面</button>
+    </div>
+    
     <div class="lyrics" id="lyrics"></div>
 
     <script>
+        const cassette = document.getElementById('cassette');
         const playBtn = document.getElementById('play-btn');
-        const reel1 = document.getElementById('reel1');
-        const reel2 = document.getElementById('reel2');
+        const flipBtn = document.getElementById('flip-btn');
         const lyricsDiv = document.getElementById('lyrics');
+        const reelsA = document.querySelectorAll('.reel-a');
+        const reelsB = document.querySelectorAll('.reel-b');
 
-        const message = "媽，辛苦了！\n雖然現在沒辦法陪在妳身邊，\n但我一直都很掛念妳喔。\n謝謝妳所有的包容，\n母親節快樂 ❤️";
-        let index = 0;
+        const messageA = "媽，辛苦了！\n雖然現在在台南沒辦法陪在妳身邊，\n但我一直都很掛念妳喔。\n謝謝妳所有的包容，母親節快樂 ❤️";
+        const messageB = "驚喜彩蛋來了 🎉\n沒有錢請吃大餐，只好出賣勞力！\n憑此 B 面錄音帶，\n下次放假回家，家事我全包了！\n(愛妳喔 😆)";
+        
         let isPlaying = false;
 
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) return;
-            isPlaying = true;
-            playBtn.style.opacity = '0.5';
-            playBtn.innerText = '播放中...';
+        function typeWriter(text, reels, callback) {
+            lyricsDiv.innerHTML = '';
+            let index = 0;
+            reels.forEach(r => r.classList.add('spin'));
             
-            // 啟動齒輪旋轉
-            reel1.classList.add('spin');
-            reel2.classList.add('spin');
-
-            // 打字機效果
             function type() {
-                if (index < message.length) {
-                    if (message.charAt(index) === '\n') {
+                if (index < text.length) {
+                    if (text.charAt(index) === '\n') {
                         lyricsDiv.innerHTML += '<br>';
                     } else {
-                        lyricsDiv.innerHTML += message.charAt(index);
+                        lyricsDiv.innerHTML += text.charAt(index);
                     }
                     index++;
                     setTimeout(type, 150);
                 } else {
-                    // 播放結束
-                    reel1.classList.remove('spin');
-                    reel2.classList.remove('spin');
-                    playBtn.innerText = '播放完畢';
+                    reels.forEach(r => r.classList.remove('spin'));
+                    if (callback) callback();
                 }
             }
             type();
+        }
+
+        // 播放 A 面
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) return;
+            isPlaying = true;
+            playBtn.style.display = 'none';
+            
+            typeWriter(messageA, reelsA, () => {
+                setTimeout(() => {
+                    flipBtn.style.display = 'block'; // 顯示翻轉按鈕
+                }, 1000);
+            });
+        });
+
+        // 翻轉並播放 B 面
+        flipBtn.addEventListener('click', () => {
+            flipBtn.style.display = 'none';
+            lyricsDiv.innerHTML = ''; // 清空字幕
+            
+            // 翻轉錄音帶
+            cassette.classList.add('is-flipped');
+            
+            // 翻轉完畢後開始打字
+            setTimeout(() => {
+                typeWriter(messageB, reelsB, () => {
+                    // 全部結束
+                });
+            }, 800);
         });
     </script>
 </body>
