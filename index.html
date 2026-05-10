@@ -39,6 +39,13 @@
         .lyrics {
             margin-top: 30px; height: 100px; font-size: 16px; line-height: 1.8; text-align: center; padding: 0 20px;
         }
+
+        /* 將播放器移到畫面最外面，避免手機判定為完全隱藏而阻擋 */
+        .hidden-player {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
     </style>
 </head>
 <body>
@@ -56,31 +63,53 @@
     <button class="play-btn" id="play-btn">▶ 播放</button>
     <div class="lyrics" id="lyrics"></div>
 
-    <!-- 隱藏的 YouTube 播放器 (修改為手機防擋格式) -->
-    <!-- 👇👇👇 請在 start= 後面填寫你要的「總秒數」 👇👇👇 -->
-    <iframe id="yt-player" style="position: absolute; opacity: 0; width: 1px; height: 1px;" src="https://www.youtube.com/embed/a53LYWWuAWU?enablejsapi=1&autoplay=0&start=65" frameborder="0" allow="autoplay"></iframe>
+    <!-- 這是給 YouTube 官方 API 放影片的空盒子 -->
+    <div class="hidden-player">
+        <div id="player"></div>
+    </div>
 
     <script>
+        // 1. 載入 YouTube 官方的控制 API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var ytPlayer;
+        
+        // 2. 當 API 載入完成後，設定你的歌曲
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('player', {
+                height: '10',
+                width: '10',
+                videoId: 'a53LYWWuAWU', // 這裡放你的影片代碼
+                playerVars: {
+                    'playsinline': 1, // 告訴手機不要全螢幕播放
+                    'start': 65       // 👈 修改這裡的數字，控制要從第幾秒開始播！
+                }
+            });
+        }
+
         const playBtn = document.getElementById('play-btn');
         const reel1 = document.getElementById('reel1');
         const reel2 = document.getElementById('reel2');
         const lyricsDiv = document.getElementById('lyrics');
         
-        // 抓取 YouTube 播放器
-        const ytPlayer = document.getElementById('yt-player').contentWindow;
-
         const message = "媽，辛苦了！\n雖然現在沒辦法陪在妳身邊，\n但我一直都很掛念妳喔。\n謝謝妳所有的包容，\n母親節快樂 ❤️";
         let index = 0;
         let isPlaying = false;
 
+        // 按下播放鍵的動作
         playBtn.addEventListener('click', () => {
             if (isPlaying) return;
             isPlaying = true;
             playBtn.style.opacity = '0.5';
             playBtn.innerText = '播放中...';
             
-            // 觸發 YouTube 播放音樂
-            ytPlayer.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            // 使用官方 API 播放影片，手機就不會擋了
+            if (ytPlayer && ytPlayer.playVideo) {
+                ytPlayer.playVideo();
+            }
             
             // 啟動齒輪旋轉
             reel1.classList.add('spin');
@@ -97,7 +126,6 @@
                     index++;
                     setTimeout(type, 150);
                 } else {
-                    // 打字結束 (影片繼續播)
                     reel1.classList.remove('spin');
                     reel2.classList.remove('spin');
                     playBtn.innerText = '播放完畢';
