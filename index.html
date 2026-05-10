@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📦 您的溫馨包裹已抵達</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <title>💌 給媽媽的一封信</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --main-pink: #ffafcc;
-            --dark-pink: #ff8fab;
-            --light-pink: #ffe5ec;
-            --bg-pink: #fff0f3;
+            --bg-color: #fdfbf7; /* 溫暖的奶油米白色 */
+            --text-color: #5c4a43; /* 柔和的深棕色 */
+            --highlight: #e29587; /* 溫柔的灰粉色 */
         }
 
         body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: var(--bg-pink);
+            font-family: 'Noto Serif TC', serif; /* 使用優雅的明體 */
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             display: flex;
             justify-content: center;
@@ -25,242 +25,137 @@
         }
 
         .container {
-            background-color: #ffffff;
             width: 85%;
-            max-width: 380px;
+            max-width: 400px;
             padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(255, 175, 204, 0.3);
-            text-align: center;
-            border: 3px solid var(--light-pink);
-            position: relative;
-            z-index: 10;
-        }
-
-        h2 {
-            color: var(--dark-pink);
-            font-size: 20px;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-
-        /* 進度條外框 */
-        .progress-bg {
-            background-color: var(--light-pink);
-            height: 14px;
-            border-radius: 20px;
-            width: 100%;
-            margin-bottom: 25px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        /* 進度條本體 */
-        .progress-bar {
-            background: linear-gradient(90deg, var(--main-pink), var(--dark-pink));
-            height: 100%;
-            width: 0%;
-            border-radius: 20px;
-            transition: width 1s ease-in-out;
-        }
-
-        /* 狀態文字列表 */
-        .status-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
             text-align: left;
-            min-height: 130px;
+            position: relative;
         }
 
-        .status-list li {
-            font-size: 15px;
-            margin-bottom: 12px;
-            color: #777;
-            opacity: 0;
-            transform: translateX(-10px);
-            animation: slideIn 0.5s forwards;
-            display: flex;
-            align-items: center;
-        }
-
-        .status-list li::before {
-            content: '🌸';
-            margin-right: 8px;
-            font-size: 12px;
-        }
-
-        /* 禮物盒 */
-        #gift-box {
+        /* 初始的信封按鈕 */
+        #start-btn {
+            background: none;
+            border: 2px solid var(--highlight);
+            color: var(--highlight);
+            font-size: 18px;
+            padding: 15px 30px;
+            border-radius: 30px;
             cursor: pointer;
-            padding: 20px;
+            font-family: 'Noto Serif TC', serif;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s;
+            animation: float 2s ease-in-out infinite;
         }
 
-        .box-emoji {
-            font-size: 90px;
-            filter: drop-shadow(0 5px 10px rgba(255, 143, 171, 0.4));
-            animation: heartBeat 1.5s infinite;
+        #start-btn:hover {
+            background: var(--highlight);
+            color: white;
         }
 
-        .click-hint {
-            color: var(--dark-pink);
-            font-weight: bold;
-            margin-top: 15px;
-            font-size: 14px;
-            background: var(--light-pink);
-            padding: 5px 15px;
-            border-radius: 20px;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 打字機文字區塊 */
+        #typewriter-text {
+            font-size: 18px;
+            line-height: 2;
+            letter-spacing: 2px;
+            min-height: 250px;
+        }
+
+        /* 游標閃爍效果 */
+        .cursor {
             display: inline-block;
+            width: 2px;
+            height: 18px;
+            background-color: var(--highlight);
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
         }
 
-        /* 最終畫面 */
-        #final-message img {
-            width: 100%;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 5px solid var(--light-pink);
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
-        #final-message h1 {
-            color: var(--dark-pink);
-            font-size: 26px;
-            margin: 10px 0;
+        /* 結尾隱藏的花朵圖案 */
+        #ending-flower {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 40px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s ease;
         }
 
-        #final-message p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #666;
-            margin-bottom: 0;
+        .show-flower {
+            opacity: 1 !important;
+            transform: scale(1) !important;
         }
 
         .hidden { display: none !important; }
-
-        /* 動畫區 */
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.1); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.1); }
-            70% { transform: scale(1); }
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .pop-in { animation: pop 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.27); }
-
-        /* 愛心噴發特效 */
-        .heart {
-            position: absolute;
-            font-size: 20px;
-            color: var(--dark-pink);
-            user-select: none;
-            pointer-events: none;
-            z-index: 1;
-            animation: fly 2s linear forwards;
-        }
-
-        @keyframes fly {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <div class="container" id="main-card">
-        <div id="tracking-ui">
-            <h2>🌸 溫馨包裹物流查詢 🌸</h2>
-            <div class="progress-bg">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <ul class="status-list" id="status-list"></ul>
+    <div class="container">
+        <!-- 點擊開始的按鈕 -->
+        <button id="start-btn">💌 點擊開啟信件</button>
+        
+        <!-- 文字顯示區 -->
+        <div id="text-container" class="hidden">
+            <span id="typewriter-text"></span><span class="cursor" id="cursor"></span>
         </div>
 
-        <div id="gift-box" class="hidden">
-            <div class="box-emoji">🎁</div>
-            <div class="click-hint">點擊拆開驚喜</div>
-        </div>
-
-        <div id="final-message" class="hidden">
-            <img id="moms-photo" src="https://images.unsplash.com/photo-1525268771113-32d9e9021a97?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="母親節快樂">
-            <h1>母親節快樂 💖</h1>
-            <p>親愛的媽媽：<br>
-               雖然這陣子不住在家裡，<br>
-               但我的心一直都在妳身邊喔！<br>
-               謝謝妳總是這麼愛我，<br>
-               祝最漂亮的媽媽天天開心、身體健康！</p>
-        </div>
+        <!-- 結尾的插圖/符號 -->
+        <div id="ending-flower">🌷 母親節快樂 🌷</div>
     </div>
 
     <script>
-        const statuses = [
-            { text: "[理貨中] 滿滿的感謝已裝箱", width: "35%" },
-            { text: "[運送中] 跨越距離直達媽媽心裡", width: "70%" },
-            { text: "[已送達] 您的寶貝愛意已簽收", width: "100%" }
-        ];
+        // 你想對媽媽說的話，換行請用 \n
+        const letterContent = "親愛的媽媽：\n\n母親節快樂！\n\n雖然這陣子不在家，\n沒辦法陪在妳身邊過節，\n但還是想跟妳說聲謝謝。\n\n謝謝妳一直以來的照顧與包容，\n妳的健康快樂就是我最大的安心。\n\n等我這陣子忙完，就回家陪妳吃飯！\n\n永遠愛妳喔 ❤️";
+        
+        const startBtn = document.getElementById('start-btn');
+        const textContainer = document.getElementById('text-container');
+        const typewriterText = document.getElementById('typewriter-text');
+        const cursor = document.getElementById('cursor');
+        const endingFlower = document.getElementById('ending-flower');
 
-        let currentStatus = 0;
-        const progressBar = document.getElementById('progress-bar');
-        const statusList = document.getElementById('status-list');
-        const trackingUi = document.getElementById('tracking-ui');
-        const giftBox = document.getElementById('gift-box');
-        const finalMessage = document.getElementById('final-message');
+        let index = 0;
+        const typingSpeed = 150; // 打字速度，數字越大越慢
 
-        function runTracking() {
-            if (currentStatus < statuses.length) {
-                const li = document.createElement('li');
-                li.textContent = statuses[currentStatus].text;
-                statusList.appendChild(li);
-                progressBar.style.width = statuses[currentStatus].width;
+        // 打字機特效函數
+        function typeWriter() {
+            if (index < letterContent.length) {
+                // 處理換行符號
+                if (letterContent.charAt(index) === '\n') {
+                    typewriterText.innerHTML += '<br>';
+                } else {
+                    typewriterText.innerHTML += letterContent.charAt(index);
+                }
+                index++;
                 
-                currentStatus++;
-                setTimeout(runTracking, 2000);
+                // 隨機稍微改變打字速度，模仿真人打字感
+                let randomSpeed = typingSpeed + (Math.random() * 50 - 25);
+                setTimeout(typeWriter, randomSpeed);
             } else {
-                setTimeout(() => {
-                    trackingUi.style.display = 'none';
-                    giftBox.classList.remove('hidden');
-                    giftBox.classList.add('pop-in');
-                }, 1500);
+                // 打字結束，隱藏游標，顯示結尾圖案
+                cursor.style.display = 'none';
+                endingFlower.classList.add('show-flower');
             }
         }
 
-        // 建立愛心動畫
-        function createHeart() {
-            for(let i=0; i<30; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = '50%';
-                heart.style.top = '50%';
-                // 隨機噴發方向
-                heart.style.setProperty('--tx', `${(Math.random() - 0.5) * 400}px`);
-                heart.style.setProperty('--ty', `${(Math.random() - 0.5) * 400}px`);
-                heart.style.setProperty('--tr', `${Math.random() * 360}deg`);
-                
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 2000);
-            }
-        }
-
-        giftBox.addEventListener('click', () => {
-            createHeart(); // 噴發愛心
-            giftBox.style.display = 'none';
-            finalMessage.classList.remove('hidden');
-            finalMessage.classList.add('pop-in');
-            
-            // 輕微震動 (手機支援的話)
-            if (window.navigator.vibrate) window.navigator.vibrate(200);
+        // 點擊按鈕後觸發
+        startBtn.addEventListener('click', () => {
+            startBtn.classList.add('hidden'); // 隱藏按鈕
+            textContainer.classList.remove('hidden'); // 顯示文字區塊
+            setTimeout(typeWriter, 500); // 延遲半秒開始打字
         });
-
-        // 啟動
-        window.onload = () => setTimeout(runTracking, 1000);
     </script>
 </body>
 </html>
