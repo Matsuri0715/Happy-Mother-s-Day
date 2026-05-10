@@ -3,159 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💌 給媽媽的一封信</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <title>✨ 母親節專屬刮刮樂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #fdfbf7; /* 溫暖的奶油米白色 */
-            --text-color: #5c4a43; /* 柔和的深棕色 */
-            --highlight: #e29587; /* 溫柔的灰粉色 */
-        }
-
         body {
-            font-family: 'Noto Serif TC', serif; /* 使用優雅的明體 */
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #ffe5ec; /* 柔和的淺粉色背景 */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            flex-direction: column;
         }
 
-        .container {
-            width: 85%;
-            max-width: 400px;
-            padding: 30px;
-            text-align: left;
+        .title {
+            color: #d81b60;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .card-container {
             position: relative;
-        }
-
-        /* 初始的信封按鈕 */
-        #start-btn {
-            background: none;
-            border: 2px solid var(--highlight);
-            color: var(--highlight);
-            font-size: 18px;
-            padding: 15px 30px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-family: 'Noto Serif TC', serif;
-            display: block;
-            margin: 0 auto;
-            transition: all 0.3s;
-            animation: float 2s ease-in-out infinite;
-        }
-
-        #start-btn:hover {
-            background: var(--highlight);
-            color: white;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* 打字機文字區塊 */
-        #typewriter-text {
-            font-size: 18px;
-            line-height: 2;
-            letter-spacing: 2px;
-            min-height: 250px;
-        }
-
-        /* 游標閃爍效果 */
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 18px;
-            background-color: var(--highlight);
-            animation: blink 0.8s infinite;
-            vertical-align: middle;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* 結尾隱藏的花朵圖案 */
-        #ending-flower {
+            width: 300px;
+            height: 150px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-top: 30px;
-            font-size: 40px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1s ease;
+            padding: 20px;
+            overflow: hidden;
+            border: 3px dashed #ffb3c6;
         }
 
-        .show-flower {
-            opacity: 1 !important;
-            transform: scale(1) !important;
+        /* 刮開後看到的驚喜文字 */
+        .secret-message {
+            color: #c2185b;
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: bold;
         }
 
-        .hidden { display: none !important; }
+        /* 覆蓋在上面的刮刮層 */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .hint {
+            margin-top: 20px;
+            color: #ad1457;
+            font-size: 14px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- 點擊開始的按鈕 -->
-        <button id="start-btn">💌 點擊開啟信件</button>
-        
-        <!-- 文字顯示區 -->
-        <div id="text-container" class="hidden">
-            <span id="typewriter-text"></span><span class="cursor" id="cursor"></span>
-        </div>
+    <div class="title">送給最棒的媽媽 🌸</div>
 
-        <!-- 結尾的插圖/符號 -->
-        <div id="ending-flower">🌷 母親節快樂 🌷</div>
+    <div class="card-container" id="card">
+        <!-- 這裡是你給媽媽的驚喜內容 -->
+        <div class="secret-message">
+            🎉 恭喜中大獎 🎉<br>
+            獲得「免費大餐一頓」<br>
+            ＋「回家的抱抱一個」！<br>
+            母親節快樂 ❤️
+        </div>
+        <!-- 刮刮樂塗層 -->
+        <canvas id="scratch-pad"></canvas>
     </div>
 
+    <div class="hint">👇 請用手指在上方框框內刮一刮 👇</div>
+
     <script>
-        // 你想對媽媽說的話，換行請用 \n
-        const letterContent = "親愛的媽媽：\n\n母親節快樂！\n\n雖然這陣子不在家，\n沒辦法陪在妳身邊過節，\n但還是想跟妳說聲謝謝。\n\n謝謝妳一直以來的照顧與包容，\n妳的健康快樂就是我最大的安心。\n\n等我這陣子忙完，就回家陪妳吃飯！\n\n永遠愛妳喔 ❤️";
-        
-        const startBtn = document.getElementById('start-btn');
-        const textContainer = document.getElementById('text-container');
-        const typewriterText = document.getElementById('typewriter-text');
-        const cursor = document.getElementById('cursor');
-        const endingFlower = document.getElementById('ending-flower');
+        const canvas = document.getElementById('scratch-pad');
+        const ctx = canvas.getContext('2d');
+        const card = document.getElementById('card');
 
-        let index = 0;
-        const typingSpeed = 150; // 打字速度，數字越大越慢
+        // 設定畫布尺寸與外框一致
+        canvas.width = card.offsetWidth;
+        canvas.height = card.offsetHeight;
 
-        // 打字機特效函數
-        function typeWriter() {
-            if (index < letterContent.length) {
-                // 處理換行符號
-                if (letterContent.charAt(index) === '\n') {
-                    typewriterText.innerHTML += '<br>';
-                } else {
-                    typewriterText.innerHTML += letterContent.charAt(index);
-                }
-                index++;
-                
-                // 隨機稍微改變打字速度，模仿真人打字感
-                let randomSpeed = typingSpeed + (Math.random() * 50 - 25);
-                setTimeout(typeWriter, randomSpeed);
-            } else {
-                // 打字結束，隱藏游標，顯示結尾圖案
-                cursor.style.display = 'none';
-                endingFlower.classList.add('show-flower');
-            }
+        // 填滿銀灰色塗層
+        ctx.fillStyle = '#cccccc';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 在塗層上寫字
+        ctx.font = '20px "Noto Sans TC"';
+        ctx.fillStyle = '#666666';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('✨ 刮開拿禮物 ✨', canvas.width / 2, canvas.height / 2);
+
+        // 刮開的設定
+        let isDrawing = false;
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
         }
 
-        // 點擊按鈕後觸發
-        startBtn.addEventListener('click', () => {
-            startBtn.classList.add('hidden'); // 隱藏按鈕
-            textContainer.classList.remove('hidden'); // 顯示文字區塊
-            setTimeout(typeWriter, 500); // 延遲半秒開始打字
-        });
+        function scratch(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const { x, y } = getCoordinates(e);
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2); // 20是橡皮擦的大小
+            ctx.fill();
+        }
+
+        // 滑鼠事件 (電腦測試用)
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
+        canvas.addEventListener('mousemove', scratch);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        // 觸控事件 (手機用)
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+        canvas.addEventListener('touchmove', scratch);
+        canvas.addEventListener('touchend', () => isDrawing = false);
     </script>
 </body>
 </html>
