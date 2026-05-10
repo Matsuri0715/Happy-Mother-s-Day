@@ -3,148 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ 母親節專屬刮刮樂</title>
+    <title>🎫 給媽媽的專屬車票</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #ffe5ec; /* 柔和的淺粉色背景 */
+            background-color: #f4eade; /* 溫暖的奶茶色背景 */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            flex-direction: column;
+            color: #4a3b32;
         }
 
-        .title {
-            color: #d81b60;
-            margin-bottom: 20px;
+        .ticket {
+            background-color: #fff;
+            width: 320px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            border-top: 8px solid #d18b70; /* 票根上方的暖橘色點綴 */
+        }
+
+        /* 製作車票中間的虛線與打洞效果 */
+        .ticket::before, .ticket::after {
+            content: '';
+            position: absolute;
+            top: 55%;
+            width: 30px;
+            height: 30px;
+            background-color: #f4eade;
+            border-radius: 50%;
+        }
+
+        .ticket::before { left: -15px; }
+        .ticket::after { right: -15px; }
+
+        .divider {
+            border-bottom: 2px dashed #e0d5c1;
+            margin: 0 20px;
+            position: absolute;
+            top: 55%;
+            left: 10px;
+            right: 10px;
+        }
+
+        .top-half {
+            padding: 30px 25px;
+            text-align: center;
+        }
+
+        .bottom-half {
+            padding: 30px 25px;
+            background-color: #faf7f2;
+            text-align: center;
+        }
+
+        .stations {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .station {
             font-size: 24px;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            color: #d18b70;
         }
 
-        .card-container {
-            position: relative;
-            width: 300px;
-            height: 150px;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.2);
+        .arrow {
+            font-size: 20px;
+            color: #bfa396;
+        }
+
+        .ticket-info {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            overflow: hidden;
-            border: 3px dashed #ffb3c6;
-        }
-
-        /* 刮開後看到的驚喜文字 */
-        .secret-message {
-            color: #c2185b;
-            font-size: 18px;
-            line-height: 1.6;
-            font-weight: bold;
-        }
-
-        /* 覆蓋在上面的刮刮層 */
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            border-radius: 12px;
-        }
-
-        .hint {
+            justify-content: space-between;
             margin-top: 20px;
-            color: #ad1457;
             font-size: 14px;
-            animation: bounce 1.5s infinite;
+            color: #7a6b63;
+            text-align: left;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        .info-block span {
+            display: block;
+            font-size: 12px;
+            color: #bfa396;
+            margin-bottom: 3px;
+        }
+
+        .info-block strong {
+            font-size: 16px;
+            color: #4a3b32;
+        }
+
+        .message {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .stamp {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #d18b70;
+            border: 1px solid #d18b70;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transform: rotate(-5deg);
         }
     </style>
 </head>
 <body>
 
-    <div class="title">送給最棒的媽媽 🌸</div>
-
-    <div class="card-container" id="card">
-        <!-- 這裡是你給媽媽的驚喜內容 -->
-        <div class="secret-message">
-            🎉 恭喜中大獎 🎉<br>
-            獲得「免費大餐一頓」<br>
-            ＋「回家的抱抱一個」！<br>
-            母親節快樂 ❤️
+    <div class="ticket">
+        <div class="top-half">
+            <div class="stations">
+                <div class="station">台南</div>
+                <div class="arrow">➔</div>
+                <div class="station">溫暖的家</div>
+            </div>
+            
+            <div class="ticket-info">
+                <div class="info-block">
+                    <span>搭乘時間</span>
+                    <strong>下一次放假</strong>
+                </div>
+                <div class="info-block">
+                    <span>票價</span>
+                    <strong>無價的愛</strong>
+                </div>
+                <div class="info-block">
+                    <span>座位</span>
+                    <strong>心裡第一排</strong>
+                </div>
+            </div>
         </div>
-        <!-- 刮刮樂塗層 -->
-        <canvas id="scratch-pad"></canvas>
+
+        <div class="divider"></div>
+
+        <div class="bottom-half">
+            <p class="message">
+                親愛的媽媽，母親節快樂！<br>
+                雖然今天沒辦法陪在妳身邊，<br>
+                但等我忙完一定馬上回家。<br>
+                憑此票券可兌換無限次擁抱！
+            </p>
+            <div class="stamp">✅ 已確認想妳</div>
+        </div>
     </div>
 
-    <div class="hint">👇 請用手指在上方框框內刮一刮 👇</div>
-
-    <script>
-        const canvas = document.getElementById('scratch-pad');
-        const ctx = canvas.getContext('2d');
-        const card = document.getElementById('card');
-
-        // 設定畫布尺寸與外框一致
-        canvas.width = card.offsetWidth;
-        canvas.height = card.offsetHeight;
-
-        // 填滿銀灰色塗層
-        ctx.fillStyle = '#cccccc';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // 在塗層上寫字
-        ctx.font = '20px "Noto Sans TC"';
-        ctx.fillStyle = '#666666';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('✨ 刮開拿禮物 ✨', canvas.width / 2, canvas.height / 2);
-
-        // 刮開的設定
-        let isDrawing = false;
-
-        function getCoordinates(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function scratch(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const { x, y } = getCoordinates(e);
-            
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 20, 0, Math.PI * 2); // 20是橡皮擦的大小
-            ctx.fill();
-        }
-
-        // 滑鼠事件 (電腦測試用)
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
-        canvas.addEventListener('mousemove', scratch);
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('mouseleave', () => isDrawing = false);
-
-        // 觸控事件 (手機用)
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
-        canvas.addEventListener('touchmove', scratch);
-        canvas.addEventListener('touchend', () => isDrawing = false);
-    </script>
 </body>
 </html>
