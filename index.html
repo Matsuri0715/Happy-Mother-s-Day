@@ -56,8 +56,9 @@
     <button class="play-btn" id="play-btn">▶ 播放</button>
     <div class="lyrics" id="lyrics"></div>
 
-    <!-- 隱藏的 YouTube 播放器 (已經幫你換好你的歌了！) -->
-    <iframe id="yt-player" width="0" height="0" src="https://www.youtube.com/embed/a53LYWWuAWU?enablejsapi=1&autoplay=0" frameborder="0" allow="autoplay"></iframe>
+    <!-- 隱藏的 YouTube 播放器 (修改為手機防擋格式) -->
+    <!-- 👇👇👇 請在 start= 後面填寫你要的「總秒數」 👇👇👇 -->
+    <iframe id="yt-player" style="position: absolute; opacity: 0; width: 1px; height: 1px;" src="https://www.youtube.com/embed/a53LYWWuAWU?enablejsapi=1&autoplay=0&start=65" frameborder="0" allow="autoplay"></iframe>
 
     <script>
         const playBtn = document.getElementById('play-btn');
